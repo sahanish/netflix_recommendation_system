@@ -12,7 +12,5 @@ Werkzeug==0.15.5
 flask_wtf==0.14.2
 wtforms==2.2.1
 flask_login==0.4.1
-sklearn==0.20.3
-json==2.0.9
-os
+scikit-learn>=0.18
 flask_migrate
