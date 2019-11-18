@@ -1,0 +1,169 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+
+    <title>Main</title>
+    <style>
+        body{
+    background: #d9f4e3;
+    }
+
+    form{
+    max-width:600px;
+    margin:20px auto;
+    padding: 30px;
+    }
+
+    @font-face{
+        font-family: optima;
+        src: url('Desktop/optima/unicode.optima.ttf') format('truetype')
+    }
+    @font-face{
+        font-family: forque;
+        src: url('Desktop/Forque.ttf') format('truetype')
+    }
+
+    input{
+    display:block;
+    margin:10px auto;
+    padding:4px;
+    width: 450px;
+    height: 40px;
+    position:absolute;
+    left:400px;
+    top: 50px
+    }
+
+
+    .error{
+        border:2px solid crimson;
+    }
+
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgba(1, 1, 1, 0.2);
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 20px;
+    }
+
+    .rectangle1 {
+    height: 150px;
+    width: 1080px;
+    background-color: rgba(255, 255, 255, 0.4);
+    position: absolute;
+    left: 100px;
+    top:200px;
+    }
+
+    .result {
+    position: absolute;
+    left: 110px;
+    top:210px;
+    
+    cursor: pointer;
+    }
+
+    .onHover {
+        display: none;
+    }
+
+    </style>
+</head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+        var xhr = null;
+            $(".result").bind({
+            mouseenter: function(event){
+
+                $(this).find("img").css({"height":"215px","width":"179px","opacity":"0.25"});
+                $(this).find(".onHover").css({"display":"block"})
+                var a="{{ (search_result.avg_rating*100)/5 }}"
+                $(this).find("#avg_rating").rateYo({
+                rating: a+"%",
+                ratedFill: "#FF4500",
+                readOnly: true
+                });
+                $(this).find("#user_rating").rateYo({
+                multiColor: {
+                "startColor": "#FF0000", //RED
+                "endColor"  : "#00FF00"  //GREEN
+                },
+                onSet: function (rating, rateYoInstance) {
+                    var elem = $(event.currentTarget);
+                    var thumbnail = elem[0].className
+                    console.log(thumbnail)
+                xhr = $.ajax({
+                    type: "POST",
+                    url: "/received_rating",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        user: "{{ current_user.userid }}",
+                        movie: "{{ search_result.movieid }}",
+                        rating: rating
+                    }),
+                    dataType:"json",
+                    success: function(data){
+                        console.log(data.user)
+                    }
+                    // error: 
+                }).done(function(){
+                    console.log("User rating added to database")
+                }).fail(function(){
+                    console.log("Ajax Request not completed")
+                });
+                }
+                });
+            },
+            mouseleave: function(event){
+                // if (xhr){
+                //     xhr.abort();
+                //     xhr = null;
+                //     console.log("Ajax Request aborted")
+                // }
+                $(this).find("img").css({"height":"130px","width":"108px","opacity":"1"});
+                $(this).find(".onHover").css({"display":"none"})
+            }
+            });
+            
+    })
+
+</script>
+<body>
+    <div>
+        <span style = "position:absolute;left: 25px"><a href="{{ url_for('received_rating') }}">Refresh my Recommendations</a></span>
+    </div>
+    <span style = "position:absolute; top:60px; left: 20px"><img src="{{ url_for('static', filename='ApplicationLogo.png') }}" width="300px"></span>
+    <div id = "user"><span style="font-size: 29;color:#0f1357;position: absolute;top:10px;left:600px;font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">Hi, {{ current_user.username }}</span></div>
+    <div id = "logout"><span style="font-size: 20;color:white;position: absolute;top:10px;left:1200px;font-family:optima;cursor:pointer"><a href="{{ url_for('logout') }}">Logout</a></span></div>
+
+    {% if found==1 %}
+    <span style="font-size: 30;color: #0f1357;position: absolute;top:160px; left: 100px;font-family:casino;">1 Movie Found for your search criteria</span>
+    {% else %}
+    <span style="font-size: 30;color: #0f1357;position: absolute;top:160px; left: 100px;font-family:casino;">No Movie Found for your search criteria</span>
+    {% endif %}
+    
+    {% if found==1 %}
+        <div class="result">
+            <a href = "{{ url_for('static', filename=search_result.watchlink) }}">
+                <img src="{{ url_for('static', filename=search_result.thumbnail) }}" height="130px" width="108px">
+            </a>
+            <div class = "onHover">
+                <h1 style="font-size: 25;color: orangered;position: absolute;top:10px;left:10px;width:200px;font-family:forque;">Avg User Rating</h1>
+                    <div id="avg_rating" style="position:absolute;top: 35px;left: 7px;font-size:29px;"></div>
+                <h2 style="font-size: 25;color: blue;position: absolute;top:140px;left:10px;width:200px;font-family:forque;">Your Rating</h1>
+                    <div id="user_rating" style="position:absolute;top: 165px;left: 7px;font-size:29px;"></div>
+            </div>
+        </div>
+    {% endif %}
+    <!-- <script src="jquery-3.4.1.min.js"></script> -->
+    <!-- <script src="scripts/main.js"></script> -->
+</body>
+</html>

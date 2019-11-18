@@ -1,0 +1,146 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>{{ title }}</title>
+    <style>
+    body{
+    background: #d9f4e3;
+    }
+    @font-face{
+        font-family: optima;
+        src: url('Desktop/optima/unicode.optima.ttf') format('truetype')
+    }
+    @font-face{
+        font-family: forque;
+        src: url('Desktop/Forque.ttf') format('truetype')
+    }
+    .feedback{
+        position:absolute;
+        top:550px;
+        /* left:560px; */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 20px;
+        color:red;
+        text-align: center;
+    }
+
+    /* .button{
+    display:block;
+    margin:15px auto;
+    padding:4px;
+    width: 427px;
+    height: 30px;  
+    background-color:#0f1357;
+    cursor: pointer;
+    } */
+
+    /* input{
+    display:block; */
+    /* width: 427px;
+    height: 30px; */
+    /* } */
+
+
+    </style>
+</head>
+<body>
+    <span style = "position:absolute; top:50px; left: 450px"><img src="{{ url_for('static', filename='ApplicationLogo.png') }}" width="400px"></span>
+    <span style="font-size: 20;color: #0f1357;position: absolute;top:150px;left:350px;font-family:forque;"><h1>Registration Form</h1></span>
+    <div style="position:absolute;top:230px;left:350px;">
+        <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <p class="username">
+            <span style="font-size: 25;font-family:'Times New Roman', Times, serif;">{{ form.username.label }}</span><br>
+            <span style="font-family:'Times New Roman', Times, serif;">{{ form.username(size = 64) }}</span><br>
+            {% if form.username.errors %}
+            <ul class="list-group">
+                {% for error in form.username.errors %}
+                <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <ul class="list-group">
+            </ul>
+            {% endif %}
+        </p>
+        <p class = "email">
+            <span style="font-size: 25;font-family:'Times New Roman', Times, serif;">{{ form.email.label }}</span><br>
+            <span style="font-family:'Times New Roman', Times, serif;">{{ form.email(size = 64) }}</span><br>
+            {% if form.email.errors %}
+            <ul class="list-group">
+                {% for error in form.email.errors %}
+                <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <ul class="errors">
+            </ul>
+            {% endif %}
+        </p>
+        <p class="password">
+            <span style="font-size: 25;font-family:'Times New Roman', Times, serif;">{{ form.password.label }}</span><br>
+            <span style="font-family:'Times New Roman', Times, serif;">{{ form.password(size = 64) }}</span><br>
+            {% if form.password.errors %}
+            <ul class="list-group">
+                {% for error in form.password.errors %}
+                <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <ul class="errors">
+            </ul>
+            {% endif %}
+        </p>
+        <p class="confirmPassword">
+            <span style="font-size: 25;font-family:'Times New Roman', Times, serif;">{{ form.confirmPassword.label }}</span><br>
+            <span style="font-family:'Times New Roman', Times, serif;">{{ form.confirmPassword(size = 64) }}</span><br>
+            {% if form.confirmPassword.errors %}
+            <ul class="list-group">
+                {% for error in form.confirmPassword.errors %}
+                <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <ul class="errors">
+            </ul>
+            {% endif %}
+        </p>
+        <p class="submit">
+            <!-- {{ form.submit() }} -->
+            <input class="btn btn-primary" type="submit" value="Register">
+        </p>
+        <!-- {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %} -->
+        <!-- <p class="feedback" style="width:430px; position: absolute; left: 430px;">{{ feedback }}</p> -->
+        </form>
+        <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+        {% for message in messages %}
+            {% if "Error" not in message[1]: %}
+                <div class="alert alert-info">
+                <strong>Success! </strong> {{ message[1] }}
+                </div>
+            {% endif %}
+            {% if "Error" in message[1]: %}
+                <div class="alert alert-danger">
+                <strong>Error: </strong> {{ message[1] }}
+                </div>
+            {% endif %}
+        {% endfor %}
+            {% endif %}
+        {% endwith %} -->
+    </div>
+</body>
+</html>
